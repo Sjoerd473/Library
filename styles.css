@@ -97,6 +97,7 @@ body > button{
 #cards button{
     margin-right:0.5rem;
     border-radius: 10px;
+    padding:5px;
 }
 
 .modal {

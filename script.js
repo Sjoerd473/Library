@@ -30,7 +30,7 @@ let bookFour = {
     status: 'read'
 }
 
-const myLibrary = [bookOne, bookTwo, bookThree, bookFour];
+const myLibrary = [];
 
 function Book(title, author, genre, pages, status) {
     this.title = title;
@@ -40,10 +40,23 @@ function Book(title, author, genre, pages, status) {
     this.status = status;
 }
 
+Book.prototype.changeRead = function(){
+
+
+    if(this.status === 'Read'){ this.status = 'Unread'}
+    else if (this.status === 'Unread') {this.status = 'Read'};
+}
+
+
+
 function addBookToLibrary(array) {
     let container = document.getElementById('cards');
+    container.replaceChildren();
+    let bookNumber = 0;
     array.forEach((book) => {
         let card = document.createElement('div');
+        card.dataset.book = `${bookNumber}`;
+        
         container.appendChild(card);
         let parent = document.createElement('ul');
         card.appendChild(parent);
@@ -53,13 +66,19 @@ function addBookToLibrary(array) {
         let cardButtons = document.createElement('div');
 
         delButton.textContent = 'Delete';
-        if (book.status === 'unread') {
+        delButton.dataset.book = `${bookNumber}`;
+        if (book.status === 'Unread') {
             readButton.textContent = 'Read'
         } else { readButton.textContent = 'Unread' }
+        readButton.dataset.book = `${bookNumber}`;
         card.appendChild(cardButtons)
         cardButtons.appendChild(delButton)
         cardButtons.appendChild(readButton);
 
+        delButton.addEventListener('click', deleteBook);
+        readButton.addEventListener('click', changeThing );
+
+        bookNumber++
         let itemOne = document.createElement('li')
         let itemTwo = document.createElement('li')
         let itemThree = document.createElement('li')
@@ -87,6 +106,8 @@ function addBookToLibrary(array) {
 const dialog = document.querySelector('dialog');
 const closeButton = document.querySelector("dialog button");
 
+
+
 bookButton.addEventListener("click", () => {
     dialog.showModal();
 });
@@ -104,15 +125,40 @@ submitButton.addEventListener('click', (event) => {
     let pages = document.querySelector('input[name="page_count"]').value
     let rStatus = document.getElementById('reading_status').checked
     let read;
-        if (rStatus){  read = 'read'
+        if (rStatus){  read = 'Read'
             
         }
-            else {  read = 'unread'
+            else {  read = 'Unread'
                 
             };
             
-    let newBook = new Book(title, author, genre, pages, read)
-    myLibrary.push(newBook)
+    const bloop = new Book(title, author, genre, pages, read)
+    
+    
+    bloop.position = myLibrary.push(bloop) - 1
     addBookToLibrary(myLibrary)
     event.preventDefault();
+    dialog.close();
+    
 })
+
+function deleteBook(e){
+    let card = e.target.parentNode.parentNode;
+    myLibrary.splice(card.dataset.book,1);
+    card.remove();
+}
+
+function changeThing(e){
+    let book = myLibrary[e.target.dataset.book]
+    book.changeRead();
+    console.log(book);
+   let text = e.target.parentElement.parentElement.firstChild.lastChild
+    if(book.status === 'Read'){
+        e.target.textContent = 'Unread'
+        text.textContent = 'Read or unread? Read'
+    } else if (book.status === 'Unread'){
+        e.target.textContent = 'Read'
+        text.textContent = 'Read or unread? Unread'
+    }
+
+}
