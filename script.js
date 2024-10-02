@@ -89,17 +89,30 @@ const closeButton = document.querySelector("dialog button");
 
 bookButton.addEventListener("click", () => {
     dialog.showModal();
-  });
+});
 
-  closeButton.addEventListener("click", () => {
+closeButton.addEventListener("click", () => {
     dialog.close();
-  });
+});
 
-  const submitButton = document.querySelector('#confirm')
+const submitButton = document.querySelector('#confirm')
 
-  submitButton.addEventListener('click',(event) => {
-   let title = document.querySelector('input[name="book_title"]').value
-   console.log(title)
-    console.log(event);
+submitButton.addEventListener('click', (event) => {
+    let title = document.querySelector('input[name="book_title"]').value
+    let author = document.querySelector('input[name="author"]').value
+    let genre = document.querySelector('input[name="genre"]').value
+    let pages = document.querySelector('input[name="page_count"]').value
+    let rStatus = document.getElementById('reading_status').checked
+    let read;
+        if (rStatus){  read = 'read'
+            
+        }
+            else {  read = 'unread'
+                
+            };
+            
+    let newBook = new Book(title, author, genre, pages, read)
+    myLibrary.push(newBook)
+    addBookToLibrary(myLibrary)
     event.preventDefault();
-  })
+})
